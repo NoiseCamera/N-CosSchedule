@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=0.8">
     <title>みんなで作るコスイベリスト！</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -87,12 +87,11 @@
         </datalist>
 
         <input type="text" id="address" placeholder="会場・住所">
-        <label>開催日:</label>
-        <input type="date" id="startDate">
+        <input type="text" id="startDate" placeholder="開催日（必須）" onfocus="(this.type='date')" onblur="(this.value==''?this.type='text':this.type='date')">
         
         <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-            <input type="time" id="startTime" placeholder="開始">
-            <input type="time" id="endTime" placeholder="終了">
+            <input type="text" id="startTime" placeholder="開始時間" onfocus="(this.type='time')" onblur="(this.value==''?this.type='text':this.type='time')" style="flex: 1;">
+            <input type="text" id="endTime" placeholder="終了時間" onfocus="(this.type='time')" onblur="(this.value==''?this.type='text':this.type='time')" style="flex: 1;">
         </div>
 
         <input type="url" id="url" placeholder="公式サイトURL (https://...)">
@@ -513,10 +512,13 @@
                 const yyyy = d.getFullYear();
                 const mm = ("0" + (d.getMonth() + 1)).slice(-2);
                 const dd = ("0" + d.getDate()).slice(-2);
+                document.getElementById("startDate").type = "date";
                 document.getElementById("startDate").value = `${yyyy}-${mm}-${dd}`;
             }
             
+            document.getElementById("startTime").type = "time";
             document.getElementById("startTime").value = data.startTime || "";
+            document.getElementById("endTime").type = "time";
             document.getElementById("endTime").value = data.endTime || "";
             document.getElementById("url").value = data.url || "";
             document.getElementById("description").value = data.description || "";
@@ -533,9 +535,13 @@
             document.getElementById("address").value = "";
             document.getElementById("url").value = "";
             document.getElementById("description").value = "";
-            document.getElementById("startDate").value = "";
-            document.getElementById("startTime").value = "";
-            document.getElementById("endTime").value = "";
+            
+            const sd = document.getElementById("startDate");
+            sd.type = "text"; sd.value = "";
+            const st = document.getElementById("startTime");
+            st.type = "text"; st.value = "";
+            const et = document.getElementById("endTime");
+            et.type = "text"; et.value = "";
         }
 
         // --- リセットボタン処理 ---
