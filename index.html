@@ -24,11 +24,13 @@
 
     <!-- 検索フォーム -->
     <div class="card">
-        <details>
-            <summary class="main-accordion-summary">
-                <h2>地域から探す</h2>
-            </summary>
-            <p>都道府県を選択してイベントを検索できます。</p>
+        <div id="regionAccordion" class="main-accordion">
+            <div class="main-accordion-summary" onclick="document.getElementById('regionAccordion').classList.toggle('open')">
+                <h2>📍 地域から探す</h2>
+            </div>
+            <div class="main-accordion-wrapper">
+                <div class="main-accordion-content">
+                    <p style="margin-top: 10px; margin-bottom: 20px;">都道府県を選択してイベントを検索できます。</p>
             
             <div class="region-section group-hokkaido-tohoku">
                 <h3 class="region-header">北海道・東北</h3>
@@ -119,7 +121,9 @@
                 <button class="pref-btn" data-val="海外">海外</button>
             </div>
             </div>
-        </details>
+                </div>
+            </div>
+        </div>
 
         <div style="margin-top: 20px; border-top: 2px dashed #eee; padding-top: 20px;">
              <div style="margin-bottom: 10px;">
