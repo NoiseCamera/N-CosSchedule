@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>みんなで作るコスイベリスト！</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>みんなで作るコスイベリスト！</h1>
+
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <a href="index.html" class="nav-link" style="flex: 1; margin-bottom: 0;">→ イベント一覧へ</a>
+        <a href="how-to-use.html" class="nav-link" style="flex: 1; margin-bottom: 0; background: #fff3e0; border-color: #ff9800; color: #e65100;">使い方ガイド</a>
+    </div>
+
+    <div style="background: #fffaf0; border-left: 5px solid #ff9800; padding: 15px; margin-bottom: 25px; border-radius: 8px; font-size: 0.9em; color: #555; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        <strong style="color: #e65100; display: block; margin-bottom: 8px; font-size: 1.05em;">⚠️ 投稿に関する注意事項</strong>
+        <ul style="margin: 0; padding-left: 20px; line-height: 1.6;">
+            <li>イベントの名称や日程、会場などの情報は正確に入力してください。</li>
+            <li>公序良俗に反する内容、誹謗中傷、禁止ワードを含む投稿は予告なく削除される場合があります。</li>
+            <li>同じイベントの二重投稿（重複）にご注意ください。</li>
+            <li>参加者が詳細を確認できるよう、可能な限り公式サイトのURLの記載をお願いします。</li>
+            <li>イベントの日時や場所が変更、または中止になった場合は、責任をもって投稿の編集・削除を行ってください。</li>
+            <li>投稿したあなた、または管理者のみが編集・削除を行えます。責任をもって情報を管理してください。</li>
+            <li>公式サイトのリンク先に悪質なサイトが含まれる場合もありますので、リンクを開く際は自己責任でお願いいたします。</li>
+            <li>当サイトの利用により生じたいかなるトラブルや損害等についても、管理人は一切の責任を負いません。</li>
+        </ul>
+    </div>
+
+    <!-- 投稿フォーム -->
+    <div class="card">
+        <h2>新規イベント投稿</h2>
+        <input type="text" id="title" placeholder="イベント名（必須）">
+        <input type="text" id="posterName" placeholder="投稿者名">
+        
+        <input type="text" id="prefecture" list="prefecture-list" placeholder="都道府県・地域（直接入力可）">
+        <datalist id="prefecture-list">
+            <option value="北海道">北海道</option>
+            <option value="青森県">青森県</option>
+            <option value="岩手県">岩手県</option>
+            <option value="宮城県">宮城県</option>
+            <option value="秋田県">秋田県</option>
+            <option value="山形県">山形県</option>
+            <option value="福島県">福島県</option>
+            <option value="茨城県">茨城県</option>
+            <option value="栃木県">栃木県</option>
+            <option value="群馬県">群馬県</option>
+            <option value="埼玉県">埼玉県</option>
+            <option value="千葉県">千葉県</option>
+            <option value="東京都">東京都</option>
+            <option value="神奈川県">神奈川県</option>
+            <option value="新潟県">新潟県</option>
+            <option value="富山県">富山県</option>
+            <option value="石川県">石川県</option>
+            <option value="福井県">福井県</option>
+            <option value="山梨県">山梨県</option>
+            <option value="長野県">長野県</option>
+            <option value="岐阜県">岐阜県</option>
+            <option value="静岡県">静岡県</option>
+            <option value="愛知県">愛知県</option>
+            <option value="三重県">三重県</option>
+            <option value="滋賀県">滋賀県</option>
+            <option value="京都府">京都府</option>
+            <option value="大阪府">大阪府</option>
+            <option value="兵庫県">兵庫県</option>
+            <option value="奈良県">奈良県</option>
+            <option value="和歌山県">和歌山県</option>
+            <option value="鳥取県">鳥取県</option>
+            <option value="島根県">島根県</option>
+            <option value="岡山県">岡山県</option>
+            <option value="広島県">広島県</option>
+            <option value="山口県">山口県</option>
+            <option value="徳島県">徳島県</option>
+            <option value="香川県">香川県</option>
+            <option value="愛媛県">愛媛県</option>
+            <option value="高知県">高知県</option>
+            <option value="福岡県">福岡県</option>
+            <option value="佐賀県">佐賀県</option>
+            <option value="長崎県">長崎県</option>
+            <option value="熊本県">熊本県</option>
+            <option value="大分県">大分県</option>
+            <option value="宮崎県">宮崎県</option>
+            <option value="鹿児島県">鹿児島県</option>
+            <option value="沖縄県">沖縄県</option>
+        </datalist>
+
+        <input type="text" id="address" placeholder="会場・住所">
+        <label>開催日:</label>
+        <input type="date" id="startDate">
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <input type="time" id="startTime" placeholder="開始">
+            <input type="time" id="endTime" placeholder="終了">
+        </div>
+
+        <input type="url" id="url" placeholder="公式サイトURL (https://...)">
+        <textarea id="description" rows="4" placeholder="イベント詳細"></textarea>
+        
+        <div class="btn-group">
+            <button id="btnPost">イベントを投稿する</button>
+            <button id="btnReset" class="secondary" style="background-color: #9e9e9e;">リセット</button>
+            <button id="btnCancelEdit" class="secondary" style="display: none; background-color: #757575;">編集をキャンセル</button>
+        </div>
+    </div>
+
+    <!-- イベント一覧表示 -->
+    <div class="card">
+        <h2>開催予定のイベント</h2>
+        <div id="event-list">読み込み中...</div>
+        <div class="admin-btn-container">
+            <button id="btnAdmin" class="secondary admin-btn">管理者モード</button>
+        </div>
+    </div>
+
+    <footer style="text-align: center; font-size: 0.8em; color: #666; margin-top: 30px; padding: 15px; background: #fffaf0; border-radius: 8px; border: 1px solid #f3e5d4;">
+        <p style="margin: 0;">© N-CosSchedule Project by NoiseCamera</p>
+    </footer>
+
+    <!-- Custom Alert Modal -->
+    <div id="custom-alert-overlay" class="custom-modal-overlay" style="display: none;">
+        <div class="custom-modal-box">
+            <p id="custom-alert-message" class="custom-modal-message"></p>
+            <div class="custom-modal-buttons">
+                <button id="custom-alert-ok">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirm Modal -->
+    <div id="custom-confirm-overlay" class="custom-modal-overlay" style="display: none;">
+        <div class="custom-modal-box">
+            <p id="custom-confirm-message" class="custom-modal-message"></p>
+            <div class="custom-modal-buttons">
+                <button id="custom-confirm-no" class="secondary">キャンセル</button>
+                <button id="custom-confirm-yes">はい</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Prompt Modal -->
+    <div id="custom-prompt-overlay" class="custom-modal-overlay" style="display: none;">
+        <div class="custom-modal-box">
+            <p id="custom-prompt-message" class="custom-modal-message"></p>
+            <input type="text" id="custom-prompt-input">
+            <div class="custom-modal-buttons">
+                <button id="custom-prompt-no" class="secondary">キャンセル</button>
+                <button id="custom-prompt-yes">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ページトップへ戻るボタン -->
+    <button id="btnPageTop" class="page-top-btn">↑</button>
+
+    <!-- Firebase SDKの読み込み (ES Modules版) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, Timestamp, doc, deleteDoc, updateDoc, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // あなたのFirebase設定
+        const firebaseConfig = {
+            apiKey: "AIzaSyBLvko7-HHZQVQCE_ChrCgG6FlSbL3LILU",
+            authDomain: "n-cosschedule.firebaseapp.com",
+            projectId: "n-cosschedule",
+            storageBucket: "n-cosschedule.firebasestorage.app",
+            messagingSenderId: "280035863247",
+            appId: "1:280035863247:web:2f1da14c13061f1bc8e5ba"
+        };
+
+        // Firebase初期化
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- 管理者・セキュリティ関連 ---
+        // パスワード "Srm250427" のSHA-256ハッシュ
+        const ADMIN_HASH = "18f15d26391456948011933550302450860551065961623862211246187760f3";
+        
+        let isAdmin = sessionStorage.getItem("ncos_admin") === "true";
+        let editModeId = null; // 編集中のドキュメントID
+        let allEventsCache = {}; // 編集用にデータを保持
+
+        // 禁止ワードリスト
+        const prohibitedWords = [
+            // 日本語（卑猥・性的・アダルト）
+            "卑猥", "セックス", "エッチ", "ちんこ", "まんこ", "おまんこ", "おちんちん", "クリトリス", "フェラ", "中出し", 
+            "バイブ", "ローター", "自慰", "オナニー", "アヘ顔", "レイプ", "痴漢", "露出狂", "全裸", "緊縛", "不倫",
+            "援交", "援デリ", "児童ポルポ", "児童買春", "裏垢", "出会い系", "パパ活", "売春", "買春", "ソープ",
+            "ヘルス", "デリヘル", "オナホ", "クンニ", "スカトロ", "潮吹き", "潮ふき", "パイパン", "巨乳", "貧乳",
+            "熟女", "ロリ", "ショタ", "マゾ", "サド", "精子", "精液", "愛液", "膣内", "アナル", "ケツメド",
+            "クリ", "クンニ", "パイズリ", "イラマチオ", "バック", "正常位", "騎乗位", "手コキ", "足コキ", "中出し",
+            "顔射", "ぶっかけ", "オナホ", "ローター", "電マ", "ディルド", "クパァ", "ガチムチ", "ホモ", "レズ",
+
+            // 日本語（暴力・暴言・誹謗中傷・差別）
+            "死ね", "殺す", "殺害", "自殺", "爆破", "テロ", "犯罪", "詐欺", "死ねばいい", "ブス", "デブ", "ハゲ", 
+            "バカ", "阿呆", "キチガイ", "基地外", "カス", "クズ", "ゴミ", "氏ね", "氏ねばいい", "腐れ", "ガイジ",
+            "池沼", "土人", "非国民", "売国奴", "差別", "部落", "エッタ", "非人", "穢多", "屠殺", "殺処分",
+            "消えろ", "クタバレ", "くたばれ", "地獄に落ちろ", "能無し", "無能", "ウスノロ", "精神病", "メンヘラ",
+            
+            // 日本語（薬物・違法行為）
+            "覚醒剤", "大麻", "コカイン", "薬物", "密売", "マリファナ", "ドラッグ", "覚せい剤", "シャブ", "合法ハーブ",
+            "脱法ハーブ", "LSD", "MDMA", "ヘロイン", "密輸", "強盗", "窃盗", "空き巣", "万引き", "パチンコ", "ギャンブル",
+            "闇金", "高利貸し", "マネーロンダリング", "不法投棄", "放火",
+
+            // ローマ字表記・スラング
+            "shine", "korosu", "chinko", "manko", "sex", "ecchi", "oppai", "onani", "fella", "rape", "chikan",
+            "baka", "aho", "kichigai", "kasu", "kuzu", "gomi", "taima", "yakubutsu", "anal", "ketsu", "man-ko",
+            "chin-ko", "se-x", "se-ks", "omanko", "ochinchin", "fucking", "fuxk", "fxck", "kuso", "kisama",
+            "temee", "yattaze", "abuna-i", "sekkusu", "ero", "eroi", "hentai", "ecchi", "oppai", "shimane",
+            "tottori", "bakayaro", "kuso", "unko", "chimpo", "manko", "mankitsu",
+
+            // 英語（Sexual / Offensive / Vulgar）
+            "porn", "sexual", "dick", "vagina", "pussy", "penis", "clitoris", "orgasm", "masturbation",
+            "hentai", "fuck", "fucks", "fucking", "fucker", "shit", "bitch", "slut", "whore", "asshole",
+            "bastard", "cock", "cunt", "nigger", "gay", "lesbian", "blowjob", "handjob", "deepthroat",
+            "milf", "threesome", "orgie", "anal", "erection", "ejaculation", "cum", "sperm", "tit", "tits",
+            "boobs", "pornography", "adult", "prostitute", "prostitution", "rapist", "pedophile", "incest",
+            "bondage", "sadism", "masochism", "fetish", "erotic", "erotica", "69", "xxx", "x-rated", "nude",
+            "naked", "strip", "stripper", "hardcore", "softcore", "intercourse", "ejaculate", "shag",
+            "wank", "wanker", "jizz", "clit", "twat", "piss", "motherfucker", "douche", "prick",
+            
+            // 英語（Violence / Dangerous / Illegal）
+            "die", "kill", "killer", "murder", "suicide", "bomb", "terrorist", "crime", "fraud", "scam",
+            "drug", "cocaine", "marijuana", "weed", "meth", "heroin", "overdose", "poison", "bullet",
+            "weapon", "assault", "robbery", "theft", "victim", "torture", "violence", "blood", "gore",
+            "terror", "extremist", "genocide", "war", "nuke", "gun", "rifle", "pistol", "knife", "blade"
+        ];
+
+        // 禁止ワードチェック関数
+        function checkProhibitedWords(text) {
+            if (!text) return null;
+            const lowerText = text.toLowerCase();
+            for (const word of prohibitedWords) {
+                if (lowerText.includes(word.toLowerCase())) {
+                    return word;
+                }
+            }
+            return null;
+        }
+
+        // パスワードハッシュ化関数 (Web Crypto API)
+        async function sha256(text) {
+            const uint8  = new TextEncoder().encode(text);
+            const digest = await crypto.subtle.digest('SHA-256', uint8);
+            return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // 自分の投稿IDリストを取得・保存
+        function getMyPostIds() {
+            const stored = localStorage.getItem("ncos_my_posts");
+            return stored ? JSON.parse(stored) : [];
+        }
+        function addMyPostId(id) {
+            const ids = getMyPostIds();
+            if (!ids.includes(id)) {
+                ids.push(id);
+                localStorage.setItem("ncos_my_posts", JSON.stringify(ids));
+            }
+        }
+
+        // --- 一覧のボタンにイベントを設定 ---
+        function setListButtonEvents() {
+            document.querySelectorAll(".btn-edit").forEach(btn => {
+                btn.onclick = () => startEdit(btn.dataset.id);
+            });
+            document.querySelectorAll(".btn-delete").forEach(btn => {
+                btn.onclick = () => deleteEvent(btn.dataset.id);
+            });
+            document.querySelectorAll(".external-link-btn").forEach(btn => {
+                btn.onclick = async () => {
+                    const url = btn.dataset.url;
+                    if (await customConfirm("外部サイトへ移動します。\n\n※リンク先の安全性については保証できません。自己責任でアクセスしてください。\n\n移動してもよろしいですか？")) {
+                        window.open(url, '_blank');
+                    }
+                };
+            });
+        }
+
+        // --- セキュリティ: HTMLエスケープ ---
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/[&<>"']/g, function(match) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                }[match];
+            });
+        }
+
+        // --- Custom Modals ---
+        function customAlert(message) {
+            return new Promise((resolve) => {
+                const overlay = document.getElementById('custom-alert-overlay');
+                const messageP = document.getElementById('custom-alert-message');
+                const okBtn = document.getElementById('custom-alert-ok');
+
+                messageP.textContent = message;
+                overlay.style.display = 'flex';
+
+                const close = () => {
+                    overlay.style.display = 'none';
+                    okBtn.onclick = null;
+                    resolve();
+                };
+
+                okBtn.onclick = close;
+            });
+        }
+
+        function customConfirm(message) {
+            return new Promise((resolve) => {
+                const overlay = document.getElementById('custom-confirm-overlay');
+                const messageP = document.getElementById('custom-confirm-message');
+                const yesBtn = document.getElementById('custom-confirm-yes');
+                const noBtn = document.getElementById('custom-confirm-no');
+
+                messageP.textContent = message;
+                overlay.style.display = 'flex';
+
+                const close = (value) => {
+                    overlay.style.display = 'none';
+                    yesBtn.onclick = null;
+                    noBtn.onclick = null;
+                    resolve(value);
+                };
+
+                yesBtn.onclick = () => close(true);
+                noBtn.onclick = () => close(false);
+            });
+        }
+
+        function customPrompt(message, isPassword = false) {
+            return new Promise((resolve) => {
+                const overlay = document.getElementById('custom-prompt-overlay');
+                const messageP = document.getElementById('custom-prompt-message');
+                const input = document.getElementById('custom-prompt-input');
+                const yesBtn = document.getElementById('custom-prompt-yes');
+                const noBtn = document.getElementById('custom-prompt-no');
+
+                messageP.textContent = message;
+                input.value = '';
+                input.type = isPassword ? 'password' : 'text';
+                overlay.style.display = 'flex';
+                input.focus();
+
+                const close = (value) => {
+                    overlay.style.display = 'none';
+                    yesBtn.onclick = null;
+                    noBtn.onclick = null;
+                    resolve(value);
+                };
+
+                yesBtn.onclick = () => close(input.value);
+                noBtn.onclick = () => close(null);
+            });
+        }
+
+        // --- 自分関連のイベント一覧描画 ---
+        function renderMyEvents(eventsCache) {
+            const listDiv = document.getElementById("event-list");
+            listDiv.innerHTML = "";
+
+            const myIds = getMyPostIds();
+            const myEventEntries = Object.entries(eventsCache).filter(([id, data]) => isAdmin || myIds.includes(id));
+
+            // 日付の昇順でソート
+            myEventEntries.sort(([, a], [, b]) => {
+                const dateA = a.startDate ? a.startDate.toMillis() : 0;
+                const dateB = b.startDate ? b.startDate.toMillis() : 0;
+                return dateA - dateB;
+            });
+
+            if (myEventEntries.length === 0) {
+                listDiv.innerHTML = "あなたがこの端末で投稿したイベントはありません。<br><br><span style='font-size: 0.9em; color: #666;'>※他の端末で投稿したイベントを編集する場合は、<a href='index.html' style='color: #ff4081;'>イベント一覧ページ</a>から該当のイベントを探し、「🔑 キーで管理」ボタンから「削除、編集キー」を入力してください。</span>";
+                return;
+            }
+
+            // 日付ごとにグループ化
+            const groupedEvents = new Map();
+            myEventEntries.forEach(([id, data]) => {
+                const eventDate = data.startDate ? data.startDate.toDate() : null;
+                const dateKey = eventDate ? eventDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' }) : "未設定";
+                
+                if (!groupedEvents.has(dateKey)) {
+                    groupedEvents.set(dateKey, []);
+                }
+                groupedEvents.get(dateKey).push({ id, data, eventDate });
+            });
+
+            for (const [dateKey, group] of groupedEvents) {
+                const dateHeader = document.createElement("h3");
+                dateHeader.className = "date-header";
+                dateHeader.textContent = dateKey;
+                dateHeader.style.marginTop = "20px";
+                dateHeader.style.borderBottom = "2px solid #ff4081";
+                dateHeader.style.paddingBottom = "5px";
+                dateHeader.style.color = "#ff4081";
+                listDiv.appendChild(dateHeader);
+
+                group.forEach(({ id, data, eventDate }) => {
+                    const canEdit = isAdmin || myIds.includes(id);
+
+                    const month = eventDate ? eventDate.toLocaleDateString('en-US', { month: 'short' }) : '---';
+                    const day = eventDate ? eventDate.getDate() : '--';
+                    const fullDateStr = eventDate ? eventDate.toLocaleDateString('ja-JP') : "未設定";
+                    
+                    const item = document.createElement("div");
+                    item.className = "event-item";
+                    item.style.cssText = "background: #fffafb; border-left: 6px solid #ff4081; border-radius: 12px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(255, 64, 129, 0.1);";
+
+                    const url = data.url && (data.url.startsWith('http://') || data.url.startsWith('https://')) ? data.url : null;
+                    const urlButtonHTML = url ? `<button class="external-link-btn" data-url="${escapeHTML(url)}" style="font-size: 0.85em; display: inline-block; background: #e3f2fd; color: #1565c0; padding: 5px 12px; border-radius: 15px; text-decoration: none; font-weight: bold; border: none; cursor: pointer; margin-bottom: 5px;">🔗 公式サイトを見る</button>` : "";
+
+                    item.innerHTML = `
+                        <div class="event-date" style="background: linear-gradient(135deg, #ff4081, #ff79b0); color: white; border-radius: 8px; padding: 10px; text-align: center; min-width: 60px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <span class="month" style="font-size: 0.9em; font-weight: bold; display: block;">${month}</span>
+                            <span class="day" style="font-size: 1.4em; font-weight: bold; display: block;">${day}</span>
+                        </div>
+                        <div class="event-details" style="flex: 1; padding-left: 10px;">
+                            <div class="event-info" style="margin-bottom: 10px;">
+                                <strong style="font-size: 1.25em; color: #333;">✨ ${escapeHTML(data.title)}</strong><br>
+                                <span class="full-date" style="color: #666; font-size: 0.9em;">🕒 ${escapeHTML(fullDateStr)} ${escapeHTML(data.startTime) || ""} ～ ${escapeHTML(data.endTime) || ""}</span>
+                            </div>
+                            <div class="location-info" style="margin-bottom: 10px;">
+                                <span class="tag" style="background: #e1bee7; color: #4a148c; padding: 4px 10px; border-radius: 15px; font-size: 0.85em; font-weight: bold;">📍 ${escapeHTML(data.prefecture) || '場所未定'}</span> <span style="font-size: 0.95em; color: #444;">${escapeHTML(data.address) || ''}</span>
+                            </div>
+                            <p style="font-size: 0.95em; color: #555; margin: 10px 0; background: #fff; padding: 12px; border-radius: 8px; border: 1px dashed #ffb6c1;">💬 ${escapeHTML(data.description) || "詳細なし"}</p>
+                            <div style="font-size: 0.85em; color: #777; margin-bottom: 5px;">👤 投稿者: ${escapeHTML(data.posterName) || "匿名"}</div>
+                            ${urlButtonHTML}
+                            ${canEdit ? `
+                            <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; border-top: 1px dashed #eee; padding-top: 12px;">
+                                <button class="btn-edit secondary" data-id="${id}" style="width: auto; padding: 6px 16px; font-size: 0.85em; border-radius: 20px; background: #f5f5f5; border: 1px solid #ccc; color: #333;">✏️ 編集</button>
+                                <button class="btn-delete" data-id="${id}" style="width: auto; padding: 6px 16px; font-size: 0.85em; border-radius: 20px; background: #ffebee; border: 1px solid #ffcdd2; color: #d32f2f;">🗑️ 削除</button>
+                            </div>
+                            ` : ""}
+                        </div>
+                    `;
+                    listDiv.appendChild(item);
+                });
+            }
+
+            // ボタンイベントを再設定
+            setListButtonEvents();
+        }
+
+        // --- イベント一覧取得 ---
+        function loadEvents() {
+            const listDiv = document.getElementById("event-list");
+            try {
+                // 全て取得し、クライアント側でフィルタリングする
+                const q = query(collection(db, "events"), orderBy("startDate", "asc"));
+                onSnapshot(q, (querySnapshot) => {
+                    allEventsCache = {}; // キャッシュリセット
+
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        if (!data.deletedAt) {
+                            allEventsCache[doc.id] = data; // 全データをキャッシュ（重複チェック・編集用）
+                        }
+                    });
+
+                    renderMyEvents(allEventsCache);
+
+                    // URLパラメータに edit=ID があれば編集モードを開始
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const editId = urlParams.get('edit');
+                    if (editId && allEventsCache[editId] && !editModeId) {
+                        // 権限チェック：管理者 または 自分の投稿IDリストに含まれている場合のみ編集開始
+                        const myIds = getMyPostIds();
+                        if (isAdmin || myIds.includes(editId)) {
+                            startEdit(editId);
+                            window.history.replaceState(null, null, window.location.pathname);
+                        }
+                    }
+                }, (error) => {
+                    console.error("Error: ", error);
+                    listDiv.innerHTML = "データの取得に失敗しました。";
+                });
+            } catch (e) {
+                console.error("Error: ", e);
+                listDiv.innerHTML = "データの取得に失敗しました。";
+            }
+        }
+
+        // --- 編集モード開始 ---
+        async function startEdit(id) {
+            const myIds = getMyPostIds();
+            if (!isAdmin && !myIds.includes(id)) {
+                await customAlert("編集権限がありません。");
+                return;
+            }
+
+            const data = allEventsCache[id];
+            if (!data) return;
+
+            editModeId = id;
+            
+            // UIを編集モードに変更
+            document.querySelector(".card h2").textContent = "イベント編集";
+            document.getElementById("btnPost").textContent = "更新する";
+            document.getElementById("btnCancelEdit").style.display = "inline-block";
+
+            // フォームに値をセット
+            document.getElementById("title").value = data.title || "";
+            document.getElementById("posterName").value = data.posterName || "";
+            document.getElementById("prefecture").value = data.prefecture || "";
+            document.getElementById("address").value = data.address || "";
+            
+            if (data.startDate) {
+                const d = data.startDate.toDate();
+                // input type="date" 用に YYYY-MM-DD 形式に変換
+                const yyyy = d.getFullYear();
+                const mm = ("0" + (d.getMonth() + 1)).slice(-2);
+                const dd = ("0" + d.getDate()).slice(-2);
+                document.getElementById("startDate").value = `${yyyy}-${mm}-${dd}`;
+            }
+            
+            document.getElementById("startTime").value = data.startTime || "";
+            document.getElementById("endTime").value = data.endTime || "";
+            document.getElementById("url").value = data.url || "";
+            document.getElementById("description").value = data.description || "";
+
+            // フォームまでスクロール
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- フォームクリア関数 ---
+        function clearForm() {
+            document.getElementById("title").value = "";
+            document.getElementById("posterName").value = "";
+            document.getElementById("prefecture").value = "";
+            document.getElementById("address").value = "";
+            document.getElementById("url").value = "";
+            document.getElementById("description").value = "";
+            document.getElementById("startDate").value = "";
+            document.getElementById("startTime").value = "";
+            document.getElementById("endTime").value = "";
+        }
+
+        // --- リセットボタン処理 ---
+        document.getElementById("btnReset").onclick = async () => {
+            if (await customConfirm("入力内容をすべて消去しますか？")) {
+                clearForm();
+                // 編集中の場合は編集モードも解除
+                if (editModeId) {
+                    document.getElementById("btnCancelEdit").click();
+                }
+            }
+        };
+
+        // --- 編集キャンセル ---
+        document.getElementById("btnCancelEdit").onclick = () => {
+            editModeId = null;
+            document.querySelector(".card h2").textContent = "新規イベント投稿";
+            document.getElementById("btnPost").textContent = "イベントを投稿する";
+            document.getElementById("btnCancelEdit").style.display = "none";
+            
+            // フォームクリア
+            clearForm();
+        };
+
+        // --- 削除処理 ---
+        async function deleteEvent(id) {
+            const myIds = getMyPostIds();
+            if (!isAdmin && !myIds.includes(id)) {
+                await customAlert("削除権限がありません。");
+                return;
+            }
+
+            if (!(await customConfirm("本当にこのイベントを削除しますか？\nこの操作は取り消せません。"))) return;
+
+            const targetEvent = allEventsCache[id];
+            if (!targetEvent) {
+                await customAlert("エラー：対象のイベントが見つかりません。");
+                return;
+            }
+
+            try {
+                // ソフトデリートを実行
+                await updateDoc(doc(db, "events", id), {
+                    deletedAt: Timestamp.now(),
+                    deleteKey: targetEvent.deleteKey // セキュリティルール用
+                });
+                await customAlert("削除しました。");
+            } catch (e) {
+                console.error("Delete (soft) error:", e);
+                await customAlert(`削除に失敗しました。\nエラー: ${e.message}\n\n※Firestoreのセキュリティルールを更新した直後は、このエラーが発生することがあります。`);
+            }
+        }
+
+        // --- イベント投稿・更新処理 ---
+        document.getElementById("btnPost").onclick = async () => {
+            const postButton = document.getElementById("btnPost");
+            const originalButtonText = postButton.textContent;
+
+            try {
+                const title = document.getElementById("title").value;
+                const posterName = document.getElementById("posterName").value || "";
+                const prefecture = document.getElementById("prefecture").value;
+                const address = document.getElementById("address").value;
+                const startDateStr = document.getElementById("startDate").value;
+                const startTime = document.getElementById("startTime").value;
+                const endTime = document.getElementById("endTime").value;
+                const url = document.getElementById("url").value;
+                const description = document.getElementById("description").value;
+
+                if (!title || !startDateStr) {
+                    await customAlert("イベント名と日付は必須です");
+                    return;
+                }
+
+                if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+                    await customAlert("公式サイトURLは 'http://' または 'https://' で始まる必要があります。");
+                    return;
+                }
+
+                // 禁止ワードチェック
+                const fieldsToCheck = [
+                    { name: "イベント名", value: title },
+                    { name: "投稿者名", value: posterName },
+                    { name: "都道府県", value: prefecture },
+                    { name: "住所", value: address },
+                    { name: "詳細", value: description },
+                    { name: "URL", value: url }
+                ];
+
+                for (const field of fieldsToCheck) {
+                    const foundWord = checkProhibitedWords(field.value);
+                    if (foundWord) {
+                        await customAlert(`${field.name}に禁止ワードが含まれています: "${foundWord}"\n表現を変更してください。`);
+                        return;
+                    }
+                }
+
+                // アニメーション開始：ボタンを無効化し、テキストを変更
+                postButton.disabled = true;
+                postButton.textContent = "重複チェック中...";
+
+                // 1. 最新のイベント一覧をデータベースから取得します。
+                const querySnapshot = await getDocs(query(collection(db, "events")));
+                const latestEvents = [];
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (!data.deletedAt) {
+                        latestEvents.push({ id: doc.id, ...data });
+                    }
+                });
+
+                // 2. 取得した最新の一覧を元に、新しいアルゴリズムで重複がないか確実にチェックします。
+                const duplicateEvent = latestEvents.find(event => {
+                    const id = event.id;
+                    if (id === editModeId) return false; // 編集中の自分自身は除外
+                    
+                    // --- Step 1: 日付の完全一致チェック ---
+                    let dbDateStr = null;
+                    if (event.startDate && typeof event.startDate.toDate === 'function') {
+                        const d = event.startDate.toDate();
+                        dbDateStr = `${d.getFullYear()}-${("0" + (d.getMonth() + 1)).slice(-2)}-${("0" + d.getDate()).slice(-2)}`;
+                    } else if (event.startDate) {
+                        dbDateStr = String(event.startDate).split('T')[0]; // フォールバック
+                    }
+                    
+                    if (dbDateStr !== startDateStr) {
+                        return false;
+                    }
+
+                    // 文字列の全角半角・空白・大文字小文字を完全に統一する関数
+                    const normalizeStr = (str) => {
+                        if (!str) return "";
+                        return str.normalize("NFKC").replace(/[\s　]+/g, '').toLowerCase();
+                    };
+
+                    // --- Step 2: イベント名の完全一致チェック ---
+                    const dbTitle = normalizeStr(event.title);
+                    const formTitle = normalizeStr(title);
+                    if (dbTitle !== formTitle) {
+                        return false;
+                    }
+
+                    // --- Step 3: 開催場所のチェック ---
+                    const dbPref = normalizeStr(event.prefecture);
+                    const formPref = normalizeStr(prefecture);
+                    const dbAddr = normalizeStr(event.address);
+                    const formAddr = normalizeStr(address);
+
+                    // A. 都道府県が一致していれば、細かい住所の違いを無視して「重複」とみなす
+                    if (dbPref && formPref && dbPref === formPref) {
+                        return true;
+                    }
+
+                    // B. 都道府県が片方しか無い場合などは、住所全体を結合して部分一致するかチェック
+                    const dbLocation = dbPref + dbAddr;
+                    const formLocation = formPref + formAddr;
+
+                    if (!dbLocation && !formLocation) return true; // どちらも場所未設定
+                    if (!dbLocation || !formLocation) return false;
+
+                    // どちらかがもう一方を含んでいれば一致とみなす
+                    return dbLocation.includes(formLocation) || formLocation.includes(dbLocation);
+                });
+
+                // 3. ページ下部の表示も、チェックに使用した最新のデータに更新します。
+                allEventsCache = {};
+                latestEvents.forEach(event => {
+                    allEventsCache[event.id] = event;
+                });
+
+                if (duplicateEvent) {
+                    const duplicateDate = duplicateEvent.startDate ? duplicateEvent.startDate.toDate().toLocaleDateString('ja-JP') : '日付不明';
+                    await customAlert(`【重複エラー：投稿できません】\n\n既に同じ内容のイベントが登録されています。\n\nイベント名: ${duplicateEvent.title}\n開催日: ${duplicateDate}\n場所: ${duplicateEvent.prefecture || ''} ${duplicateEvent.address || ''}\n投稿者: ${duplicateEvent.posterName || '匿名'}\n\n二重投稿を防ぐため、処理を中止しました。`);
+                    return; // 完全にブロックしてfinallyブロックへ移行
+                }
+
+                // アプリ版のフォーマットに合わせてaddressフィールドを作成する
+                let finalAddress = address;
+                if (prefecture && address) {
+                    // ユーザーが住所欄に都道府県名を既に入力している場合を考慮
+                    if (!address.startsWith(prefecture)) {
+                        finalAddress = prefecture + address;
+                    }
+                } else if (prefecture && !address) {
+                    // 都道府県のみ入力されている場合
+                    finalAddress = prefecture;
+                }
+
+                const eventData = {
+                    title, posterName, prefecture,
+                    address: finalAddress, // アプリのフォーマットに合わせた住所
+                    startDate: Timestamp.fromDate(new Date(startDateStr)),
+                    startTime, endTime, url, description,
+                    stability: 0, // アプリ版との互換性のためのフィールド
+                    deletedAt: null // 追記: nullを明示的に保存しないと一覧クエリにヒットしません
+                };
+
+                // ボタンのテキストを「投稿中...」に変更
+                postButton.textContent = editModeId ? "更新中..." : "投稿中...";
+
+                if (editModeId) {
+                    const myIds = getMyPostIds();
+                    if (!isAdmin && !myIds.includes(editModeId)) {
+                        await customAlert("編集権限がありません。");
+                        return;
+                    }
+
+                    // セキュリティルールを満たすため、更新時もキーと作成者情報を渡す
+                    const originalData = allEventsCache[editModeId];
+                    if (!originalData) {
+                        await customAlert("エラー: 更新対象の元データが見つかりません。");
+                        return;
+                    }
+                    eventData.deleteKey = originalData.deleteKey;
+                    eventData.createdBy = originalData.createdBy;
+
+                    await updateDoc(doc(db, "events", editModeId), eventData);
+
+                    const existingKey = allEventsCache[editModeId]?.deleteKey || "不明";
+
+                    await customAlert(`イベントを更新しました！\n\n削除、編集キー: ${existingKey}\n\nこのキーは他の端末から投稿を編集・削除する際に必要になります。再発行はできませんので、必ず控えておいてください。`);
+                    document.getElementById("btnCancelEdit").click();
+                } else {
+                    const deleteKey = Math.random().toString(36).substring(2, 10);
+                    eventData.createdBy = "anonymous";
+                    eventData.deleteKey = deleteKey;
+                    const docRef = await addDoc(collection(db, "events"), eventData);
+                    
+                    addMyPostId(docRef.id);
+                    
+                    await customAlert(`投稿しました！\n\n削除、編集キー: ${deleteKey}\n\nこのキーは他の端末から投稿を編集・削除する際に必要になります。再発行はできませんので、必ず控えておいてください。`);
+                }
+            } catch (e) {
+                console.error("投稿/更新処理中にエラーが発生しました: ", e);
+                if (e.code === 'failed-precondition') {
+                    await customAlert("【重要】データベースの設定が必要です\n\n投稿に失敗しました。これは、データベースに「複合インデックス」が作成されていないために発生する、想定内のエラーです。\n\n解決するには、以下の手順でインデックスを作成してください。\n\n1. ブラウザの「開発者コンソール」を開きます。\n2. コンソールに表示されているエラーメッセージ内のURL（https://console.firebase.google.com/...で始まるリンク）をクリックします。\n3. 表示されたFirebaseの画面で「インデックスを作成」ボタンを押します。\n\nインデックスの作成には数分かかります。作成が完了すると、このエラーは解消され、投稿できるようになります。");
+                } else {
+                    await customAlert(`投稿に失敗しました。予期せぬエラーが発生しました。\n\nエラーコード: ${e.code || '不明'}\nメッセージ: ${e.message || '不明'}\n\n開発者コンソールで詳細を確認してください。`);
+                }
+            } finally {
+                // アニメーション終了：ボタンの状態を元に戻す
+                postButton.disabled = false;
+                postButton.textContent = originalButtonText;
+            }
+        };
+
+        // --- 管理者ログイン処理 ---
+        document.getElementById("btnAdmin").onclick = async () => {
+            const input = await customPrompt("管理者パスワードを入力してください:", true);
+            if (!input) return;
+ 
+            try {
+                const hash = await sha256(input);
+                if (hash === ADMIN_HASH) {
+                    await customAlert("認証成功：管理者モードになりました。");
+                    isAdmin = true;
+                    sessionStorage.setItem("ncos_admin", "true");
+                    renderMyEvents(allEventsCache); // 再描画して管理ボタンを表示
+                } else {
+                    await customAlert("パスワードが違います。");
+                }
+            } catch (e) {
+                console.error("パスワードのハッシュ化に失敗しました:", e);
+                await customAlert("エラーが発生しました。開発者コンソールを確認してください。\n\nこの機能は、Webサーバー経由 (http://localhost など) でアクセスした場合にのみ動作します。\nファイルから直接開いている (file:///) 場合は利用できません。");
+            }
+        };
+
+        // ページトップへ戻るボタンの制御
+        const btnPageTop = document.getElementById("btnPageTop");
+        window.addEventListener("scroll", () => {
+            if (window.scrollY > 300) {
+                btnPageTop.classList.add("show");
+            } else {
+                btnPageTop.classList.remove("show");
+            }
+        });
+        btnPageTop.addEventListener("click", () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // 起動時に読み込み
+        loadEvents();
+    </script>
+</body>
+</html>

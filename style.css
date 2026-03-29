@@ -1,0 +1,332 @@
+:root {
+    --primary-color: #FF4081; /* 変更: ポップで元気なピンク */
+    --bg-color: #fff0f5;      /* 変更: さらに明るいピンク */
+    --card-bg: #ffffff;
+    --text-color: #333;
+    --border-radius: 16px;
+}
+body { 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    max-width: 800px; 
+    margin: 0 auto; 
+    padding: 20px 20px 80px 20px; /* ページトップボタンが被らないよう下部に余白を追加 */
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    /* カラフルなドット背景を追加 */
+    background-image: radial-gradient(#ff80ab 2px, transparent 2px), radial-gradient(#b388ff 2px, transparent 2px);
+    background-size: 30px 30px;
+    background-position: 0 0, 15px 15px;
+}
+h1 { 
+    text-align: center; 
+    margin-bottom: 30px; 
+    font-weight: 900;
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+    color: var(--primary-color);
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.15);
+}
+h2 { 
+    color: #444; 
+    font-size: 1.2rem; 
+    margin-top: 0; 
+    margin-bottom: 20px; 
+    border-bottom: 2px solid #f0f0f0; 
+    padding-bottom: 10px; 
+}
+.card { 
+    background: var(--card-bg); 
+    padding: 25px; 
+    border-radius: var(--border-radius); 
+    margin-bottom: 25px; 
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05); /* 柔らかい影 */
+    position: relative;
+    overflow: hidden;
+}
+/* カード上部にカラフルなラインを追加 */
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #FF4081, #FF9100, #FFEA00, #00E676, #2979FF, #D500F9);
+}
+/* 入力フォームを見やすく、タップしやすく */
+input, select, textarea { 
+    width: 100%; 
+    padding: 14px; 
+    margin: 8px 0 20px 0; 
+    border: 1px solid #e0e0e0; 
+    border-radius: 12px; 
+    box-sizing: border-box; 
+    font-size: 16px; /* スマホでズームしないサイズ */
+    background-color: #fafafa;
+    appearance: none;
+}
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: #fff;
+    box-shadow: 0 0 0 4px rgba(255, 64, 129, 0.1);
+}
+label { display: block; margin-top: 5px; font-weight: bold; color: #666; font-size: 0.9em; }
+
+/* ボタンデザイン */
+.btn-group { display: flex; gap: 15px; }
+button { 
+    background: linear-gradient(135deg, #FF4081, #F50057);
+    color: white; 
+    padding: 15px; 
+    border: none; 
+    border-radius: 50px; 
+    cursor: pointer; 
+    width: 100%; 
+    font-size: 16px; 
+    font-weight: bold; 
+    box-shadow: 0 4px 10px rgba(245, 0, 87, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+button:active { transform: scale(0.98); }
+button:not(.secondary):hover {
+    box-shadow: 0 6px 15px rgba(245, 0, 87, 0.4);
+    transform: translateY(-2px);
+}
+button.secondary { 
+    background: #f0f0f0; 
+    color: #555; 
+    box-shadow: none;
+    transition: background-color 0.2s;
+}
+button.secondary:hover {
+    background-color: #e0e0e0;
+}
+
+/* イベントリスト */
+.event-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    margin-bottom: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: none;
+}
+.event-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+.event-date {
+    flex-shrink: 0;
+    width: 60px;
+    background: linear-gradient(135deg, #FCE4EC, #F8BBD0);
+    color: #C2185B;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: bold;
+    padding: 10px 5px;
+}
+.event-date .month { display: block; font-size: 0.8em; text-transform: uppercase; }
+.event-date .day { display: block; font-size: 1.8em; line-height: 1.1; }
+.event-details { flex-grow: 1; }
+.event-details strong { font-size: 1.1rem; font-weight: 600; color: #333; }
+.event-info { margin-bottom: 8px; }
+.full-date { font-size: 0.9em; color: #666; }
+.location-info { margin-bottom: 10px; }
+.tag { display: inline-block; background: #FCE4EC; color: var(--primary-color); padding: 4px 12px; border-radius: 20px; font-size: 0.8em; margin-right: 8px; font-weight: bold; }
+
+.nav-link { 
+    display: block; 
+    text-align: center; 
+    background: white; 
+    padding: 15px; 
+    border-radius: var(--border-radius); 
+    color: #555; 
+    text-decoration: none; 
+    font-weight: bold; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    border: 2px dashed #FF4081; /* ポップな破線 */
+    transition: all 0.3s ease;
+}
+.nav-link:hover {
+    background: #FF4081;
+    color: white;
+    border-style: solid;
+    transform: rotate(-1deg) scale(1.02); /* ちょっと傾くアニメーション */
+}
+
+/* 管理者ボタン */
+.admin-btn-container { margin-top: 20px; text-align: right; }
+.admin-btn {
+    width: auto;
+    font-size: 0.8em;
+    padding: 5px 15px;
+}
+
+/* --- 地域別検索ボタンのスタイル --- */
+.region-section { margin-bottom: 20px; }
+.region-header {
+    font-size: 1rem;
+    color: #555;
+    border-left: 5px solid #ccc;
+    padding-left: 10px;
+    margin-bottom: 10px;
+}
+
+/* --- 全体を囲むアコーディオンのスタイル --- */
+.main-accordion-summary {
+    cursor: pointer;
+    list-style: none;
+    position: relative;
+    outline: none;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+.main-accordion-summary::-webkit-details-marker {
+    display: none;
+}
+.main-accordion-summary h2 {
+    display: inline-block;
+    margin: 0;
+    border: none;
+    padding: 0;
+}
+.main-accordion-summary::after {
+    content: "▼";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2em;
+    color: #444;
+}
+details[open] .main-accordion-summary::after {
+    content: "▲";
+}
+.pref-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.pref-btn {
+    width: auto;
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 20px;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: none;
+    cursor: pointer;
+}
+.pref-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.pref-btn:active {
+    transform: scale(0.95);
+}
+
+/* 地域ごとの配色 */
+.group-hokkaido-tohoku .region-header { border-color: #29B6F6; color: #0277BD; }
+.group-hokkaido-tohoku .pref-btn { background: linear-gradient(135deg, #4FC3F7, #0288D1); }
+.group-kanto .region-header { border-color: #66BB6A; color: #2E7D32; }
+.group-kanto .pref-btn { background: linear-gradient(135deg, #81C784, #388E3C); }
+.group-chubu .region-header { border-color: #FFA726; color: #EF6C00; }
+.group-chubu .pref-btn { background: linear-gradient(135deg, #FFB74D, #F57C00); }
+.group-kinki .region-header { border-color: #EC407A; color: #C2185B; }
+.group-kinki .pref-btn { background: linear-gradient(135deg, #F06292, #C2185B); }
+.group-chugoku-shikoku .region-header { border-color: #AB47BC; color: #7B1FA2; }
+.group-chugoku-shikoku .pref-btn { background: linear-gradient(135deg, #BA68C8, #7B1FA2); }
+.group-kyushu-okinawa .region-header { border-color: #FF7043; color: #D84315; }
+.group-kyushu-okinawa .pref-btn { background: linear-gradient(135deg, #FF8A65, #E64A19); }
+.group-overseas .region-header { border-color: #78909C; color: #455A64; }
+.group-overseas .pref-btn { background: linear-gradient(135deg, #90A4AE, #546E7A); }
+
+/* スマホ向け調整 */
+@media (max-width: 600px) {
+    body { padding: 10px 10px 80px 10px; } /* スマホでも同様に下部の余白を確保 */
+    .card { padding: 20px; }
+    .btn-group { flex-direction: column; } /* ボタンを縦並びに */
+    .search-group { flex-direction: column; }
+    h1 { font-size: 1.8rem; }
+}
+
+/* --- カスタムモーダル --- */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.custom-modal-box {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 450px;
+}
+.custom-modal-message {
+    white-space: pre-wrap;
+    text-align: left;
+    margin-bottom: 20px;
+}
+.custom-modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+.report-btn {
+    background: none !important;
+    border: 1px solid #ccc !important;
+    color: #777 !important;
+    font-size: 0.75em !important;
+    padding: 2px 8px !important;
+    box-shadow: none !important;
+}
+
+/* --- ページトップへ戻るボタン --- */
+.page-top-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 1000;
+    padding: 0;
+    line-height: 50px;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.2s;
+}
+.page-top-btn.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+.page-top-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+}

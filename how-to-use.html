@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>使い方ガイド - みんなで作るコスイベリスト！</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>使い方ガイド</h1>
+    <a href="index.html" class="nav-link">→ イベント一覧へ戻る</a>
+
+    <div class="card">
+        <h2>🎉 このサイトについて</h2>
+        <p>「みんなで作るコスイベリスト！」は、全国のコスプレイベント情報をみんなで共有し、確認できるサイトです。<br>
+        ユーザー登録不要で、誰でも簡単にイベント情報の検索と投稿ができます。</p>
+    </div>
+
+    <div class="card">
+        <h2>🔍 イベントの探し方</h2>
+        <h3>1. 地域から探す</h3>
+        <p>トップページの「地域から探す」メニューを開き、見たい都道府県のボタンをタップすると、その地域のイベントだけが絞り込まれて表示されます。</p>
+        
+        <h3>2. キーワードで探す</h3>
+        <p>「その他のキーワードで検索」の入力欄に市町村名やイベント名の一部などを入力し、「キーワード検索」ボタンを押すと、該当するイベントが表示されます。</p>
+        
+        <h3>3. すべてのイベントを表示</h3>
+        <p>「すべてのイベントを表示」ボタンを押すと、絞り込みが解除され、登録されている全地域の開催予定イベントが一覧表示されます。</p>
+    </div>
+
+    <div class="card">
+        <h2>✍️ イベントの投稿方法</h2>
+        <p>「イベントを投稿する」ページから、新しいイベント情報を追加できます。</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>イベント名と開催日</strong>は必須項目です。必ず入力してください。</li>
+            <li>都道府県や住所、開始・終了時間、公式サイトURLなどを入力すると、他の人が参加しやすくなります。</li>
+            <li>二重投稿を防ぐため、投稿時に自動で重複チェックが行われます。</li>
+            <li>投稿が完了すると<strong>「削除、編集キー」</strong>が発行されます。別の端末から編集・削除したい場合に必要になりますので、必ずメモしておいてください。</li>
+        </ul>
+        <p style="color: #e65100; font-size: 0.9em; font-weight: bold;">※投稿前には必ずページ上部の「注意事項」をお読みください。</p>
+    </div>
+
+    <div class="card">
+        <h2>✏️ 編集と削除について</h2>
+        <p>イベントが中止や延期になった場合、または内容に間違いがあった場合は、速やかに情報の修正をお願いします。</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>自分が投稿したイベント</strong>のみ、一覧の各イベントに「✏️ 編集」「🗑️ 削除」ボタンが表示されます。</li>
+            <li>他の端末で投稿したイベントを編集・削除したい場合は、一覧の「🔑 キーで管理」ボタンから「削除、編集キー」を入力することで権限を取得できます。</li>
+            <li>編集ボタンを押すと、投稿フォームに内容が入り、修正して「更新する」ことができます。</li>
+            <li>削除ボタンを押すと、そのイベント情報を取り消すことができます。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>📥 ダウンロード機能</h2>
+        <p>イベント一覧ページの下部にあるボタンから、現在表示されているイベントリストを様々な形式で保存できます。</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>CSV / JSON:</strong> Excelなどの表計算ソフトや、他のアプリでデータを活用したい場合に便利です。</li>
+            <li><strong>テキスト:</strong> メモ帳などで読みやすく、SNS等でリストを共有したい場合におすすめです。</li>
+            <li><strong>PDF:</strong> 画面の見た目そのままに、綺麗に保存・印刷したい場合に使用します。</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>⚠️ 問題の報告</h2>
+        <p>公序良俗に反する投稿、悪質なサイトへのリンク、荒らし行為などを見つけた場合は、各イベントの右下にある「⚠️ 問題を報告」ボタンからお知らせください。管理者が内容を確認し、適切な対応を行います。</p>
+    </div>
+
+    <footer style="text-align: center; font-size: 0.8em; color: #666; margin-top: 30px; padding: 15px; background: #fffaf0; border-radius: 8px; border: 1px solid #f3e5d4;">
+        <p style="margin: 0;">当サイトの利用により生じたいかなるトラブルや損害等についても、管理人は一切の責任を負いません。</p>
+        <p style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px; font-size: 0.9em;">© N-CosSchedule Project by NoiseCamera</p>
+    </footer>
+
+    <!-- ページトップへ戻るボタン -->
+    <button id="btnPageTop" class="page-top-btn">↑</button>
+    <script>
+        const btnPageTop = document.getElementById("btnPageTop");
+        window.addEventListener("scroll", () => {
+            btnPageTop.classList.toggle("show", window.scrollY > 300);
+        });
+        btnPageTop.addEventListener("click", () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>
