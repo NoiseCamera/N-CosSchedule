@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理者ログイン - みんなで作るコスイベリスト！</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>管理者ログイン</h1>
+    <a href="index.html" class="nav-link">← イベント一覧へ戻る</a>
+
+    <div class="card">
+        <h2>ログイン</h2>
+        <input type="email" id="email" placeholder="メールアドレス" autocomplete="email">
+        <input type="password" id="password" placeholder="パスワード" autocomplete="current-password">
+        <button id="btnLogin">ログイン</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBLvko7-HHZQVQCE_ChrCgG6FlSbL3LILU",
+            authDomain: "n-cosschedule.firebaseapp.com",
+            projectId: "n-cosschedule",
+            storageBucket: "n-cosschedule.firebasestorage.app",
+            messagingSenderId: "280035863247",
+            appId: "1:280035863247:web:2f1da14c13061f1bc8e5ba"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        document.getElementById('btnLogin').onclick = async () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                alert("メールアドレスとパスワードを入力してください。");
+                return;
+            }
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                alert("ログインに成功しました。");
+                window.location.href = 'index.html'; // トップページへ移動
+            } catch (error) {
+                console.error("Login failed:", error);
+                alert("ログインに失敗しました。メールアドレスまたはパスワードが間違っています。");
+            }
+        };
+    </script>
+
+</body>
+</html>

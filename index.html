@@ -187,6 +187,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, query, orderBy, doc, deleteDoc, addDoc, Timestamp, onSnapshot, where, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBLvko7-HHZQVQCE_ChrCgG6FlSbL3LILU",
@@ -199,10 +200,13 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
 
         // --- 管理者・セキュリティ関連 ---
-        const ADMIN_HASH = "18f15d26391456948011933550302450860551065961623862211246187760f3";
-        let isAdmin = sessionStorage.getItem("ncos_admin") === "true";
+        // ★★★ あなたがFirebaseで登録した管理者のメールアドレスに変更してください
+        const ADMIN_EMAIL = "your-admin-email@example.com"; 
+        let isAdmin = false;
+        let authInitialized = false; // 認証状態の初期チェックが完了したか
 
         // 禁止ワードリスト
         const prohibitedWords = [
@@ -260,12 +264,6 @@
                 }
             }
             return null;
-        }
-
-        async function sha256(text) {
-            const uint8  = new TextEncoder().encode(text);
-            const digest = await crypto.subtle.digest('SHA-256', uint8);
-            return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
         function getMyPostIds() {
@@ -436,6 +434,9 @@
 
         // イベントリストを画面に描画する関数
         function renderEvents(events) {
+            // 認証状態が確認できていない場合は描画しない
+            if (!authInitialized) return;
+
             currentRenderedEvents = events; // ダウンロード用に状態を保持
             const listDiv = document.getElementById("event-list");
             listDiv.innerHTML = "";
@@ -755,24 +756,26 @@
         }
 
         // 管理者モード
-        document.getElementById("btnAdmin").onclick = async () => {
-            const input = await customPrompt("管理者パスワードを入力してください:", true);
-            if (!input) return;
-            try {
-                const hash = await sha256(input);
-                if (hash === ADMIN_HASH) {
-                    await customAlert("認証成功：管理者モードになりました。");
-                    isAdmin = true;
-                    sessionStorage.setItem("ncos_admin", "true");
-                    renderEvents(allEvents); // 再描画
-                } else {
-                    await customAlert("パスワードが違います。");
+        document.getElementById("btnAdmin").onclick = () => {
+            // ログイン済みの管理者がボタンを押したらログアウトする
+            if (isAdmin) {
+                if (confirm("管理者モードを終了（ログアウト）しますか？")) {
+                    auth.signOut();
                 }
-            } catch (e) {
-                console.error("パスワードのハッシュ化に失敗しました:", e);
-                await customAlert("エラーが発生しました。開発者コンソールを確認してください。\n\nこの機能は、Webサーバー経由 (http://localhost など) でアクセスした場合にのみ動作します。\nファイルから直接開いている (file:///) 場合は利用できません。");
+            } else {
+                // 未ログインならログインページへ
+                window.location.href = 'admin-login.html';
             }
         };
+
+        // 認証状態の監視
+        onAuthStateChanged(auth, (user) => {
+            isAdmin = user && user.email === ADMIN_EMAIL;
+            document.getElementById("btnAdmin").textContent = isAdmin ? "管理者モード終了" : "管理者モード";
+            authInitialized = true; // 認証チェック完了
+            // 認証状態が変わったので、表示を再描画
+            renderEvents(currentRenderedEvents.length > 0 ? currentRenderedEvents : allEvents);
+        });
 
         // ページトップへ戻るボタンの制御
         const btnPageTop = document.getElementById("btnPageTop");
