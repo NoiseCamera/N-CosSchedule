@@ -27,6 +27,10 @@ h1 {
     letter-spacing: 2px;
     color: var(--primary-color);
     text-shadow: 2px 2px 0px rgba(0,0,0,0.15);
+    background: rgba(255, 255, 255, 0.9); /* 少し透ける白の帯 */
+    padding: 20px;
+    border-radius: var(--border-radius); /* 丸みをつける */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* ふんわりとした影 */
 }
 h2 { 
     color: #444; 
@@ -256,7 +260,7 @@ details[open] .main-accordion-summary::after {
     .card { padding: 20px; }
     .btn-group { flex-direction: column; } /* ボタンを縦並びに */
     .search-group { flex-direction: column; }
-    h1 { font-size: 1.8rem; }
+    h1 { font-size: 1.8rem; padding: 15px; }
 }
 
 /* --- カスタムモーダル --- */
