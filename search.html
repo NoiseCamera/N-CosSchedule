@@ -176,8 +176,6 @@
         const auth = getAuth(app);
 
         // --- 管理者・セキュリティ関連 ---
-        // ★★★ あなたがFirebaseで登録した管理者のメールアドレスに変更してください
-        const ADMIN_EMAIL = "your-admin-email@example.com";
         let isAdmin = false;
         let authInitialized = false; // 認証状態の初期チェックが完了したか
         let editModeId = null; // 編集中のドキュメントID
@@ -798,7 +796,7 @@
 
         // 認証状態の監視
         onAuthStateChanged(auth, (user) => {
-            isAdmin = user && user.email === ADMIN_EMAIL;
+            isAdmin = user !== null; // ログインできているユーザーは管理者とする
             document.getElementById("btnAdmin").textContent = isAdmin ? "管理者モード終了" : "管理者モード";
             authInitialized = true; // 認証チェック完了
             // 認証状態が変わったので、表示を再描画
