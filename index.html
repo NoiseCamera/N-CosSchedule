@@ -754,10 +754,10 @@
         }
 
         // 管理者モード
-        document.getElementById("btnAdmin").onclick = () => {
+        document.getElementById("btnAdmin").onclick = async () => {
             // ログイン済みの管理者がボタンを押したらログアウトする
             if (isAdmin) {
-                if (confirm("管理者モードを終了（ログアウト）しますか？")) {
+                if (await customConfirm("管理者モードを終了（ログアウト）しますか？")) {
                     auth.signOut();
                 }
             } else {
