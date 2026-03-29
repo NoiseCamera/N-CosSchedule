@@ -117,9 +117,12 @@
         </details>
 
         <div style="margin-top: 20px; border-top: 2px dashed #eee; padding-top: 20px;">
-             <input type="text" id="searchPrefecture" placeholder="その他のキーワードで検索（例: 市町村名など）" style="margin-bottom: 10px;">
+             <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
+                 <input type="text" id="searchPrefecture" placeholder="キーワード検索（例: イベント名、市町村など）" style="flex: 2; margin: 0;">
+                 <select id="searchMonth" style="flex: 1; margin: 0;"></select>
+             </div>
              <div class="btn-group">
-                 <button id="btnSearch">キーワード検索</button>
+                 <button id="btnSearch">検索</button>
                  <button id="btnShowAll" class="secondary">すべてのイベントを表示</button>
              </div>
         </div>
@@ -413,10 +416,25 @@
 
                     // 現在の検索状態（地域絞り込みなど）を維持して再描画
                     const searchVal = document.getElementById("searchPrefecture").value.trim();
-                    if (searchVal) {
-                        const filtered = allEvents.filter(event => 
-                            event.prefecture && event.prefecture.includes(searchVal)
-                        );
+                    const searchMonth = document.getElementById("searchMonth").value;
+                    if (searchVal || searchMonth) {
+                        let filtered = allEvents;
+                        if (searchVal) {
+                            filtered = filtered.filter(event => 
+                                (event.prefecture && event.prefecture.includes(searchVal)) ||
+                                (event.title && event.title.includes(searchVal)) ||
+                                (event.address && event.address.includes(searchVal))
+                            );
+                        }
+                        if (searchMonth) {
+                            filtered = filtered.filter(event => {
+                                if (!event.startDate) return false;
+                                const d = event.startDate.toDate();
+                                const yyyy = d.getFullYear();
+                                const mm = ("0" + (d.getMonth() + 1)).slice(-2);
+                                return `${yyyy}-${mm}` === searchMonth;
+                            });
+                        }
                         renderEvents(filtered);
                     } else {
                         renderEvents(allEvents);
@@ -558,14 +576,35 @@
         // 検索ボタンのクリック処理
         document.getElementById("btnSearch").onclick = () => {
             const searchVal = document.getElementById("searchPrefecture").value.trim();
-            if (!searchVal) return;
-
-            // 入力された文字が含まれる都道府県をフィルタリング（部分一致）
-            const filtered = allEvents.filter(event => 
-                event.prefecture && event.prefecture.includes(searchVal)
-            );
+            const searchMonth = document.getElementById("searchMonth").value;
             
-            document.getElementById("resultTitle").textContent = `「${searchVal}」の検索結果`;
+            if (!searchVal && !searchMonth) return;
+
+            let filtered = allEvents;
+
+            if (searchVal) {
+                filtered = filtered.filter(event => 
+                    (event.prefecture && event.prefecture.includes(searchVal)) ||
+                    (event.title && event.title.includes(searchVal)) ||
+                    (event.address && event.address.includes(searchVal))
+                );
+            }
+
+            if (searchMonth) {
+                filtered = filtered.filter(event => {
+                    if (!event.startDate) return false;
+                    const d = event.startDate.toDate();
+                    const yyyy = d.getFullYear();
+                    const mm = ("0" + (d.getMonth() + 1)).slice(-2);
+                    return `${yyyy}-${mm}` === searchMonth;
+                });
+            }
+            
+            let titleParts = [];
+            if (searchVal) titleParts.push(`「${searchVal}」`);
+            if (searchMonth) titleParts.push(`「${searchMonth.replace('-', '年')}月」`);
+            
+            document.getElementById("resultTitle").textContent = `${titleParts.join(" と ")}の検索結果`;
             renderEvents(filtered);
         };
 
@@ -575,11 +614,25 @@
                 const val = btn.getAttribute("data-val");
                 document.getElementById("searchPrefecture").value = val;
                 
-                const filtered = allEvents.filter(event => 
+                let filtered = allEvents.filter(event => 
                     event.prefecture && event.prefecture.includes(val)
                 );
                 
-                document.getElementById("resultTitle").textContent = `「${val}」の検索結果`;
+                const searchMonth = document.getElementById("searchMonth").value;
+                let titleStr = `「${val}」の検索結果`;
+                
+                if (searchMonth) {
+                    filtered = filtered.filter(event => {
+                        if (!event.startDate) return false;
+                        const d = event.startDate.toDate();
+                        const yyyy = d.getFullYear();
+                        const mm = ("0" + (d.getMonth() + 1)).slice(-2);
+                        return `${yyyy}-${mm}` === searchMonth;
+                    });
+                    titleStr = `「${val}」と「${searchMonth.replace('-', '年')}月」の検索結果`;
+                }
+
+                document.getElementById("resultTitle").textContent = titleStr;
                 renderEvents(filtered);
                 
                 // 結果へスムーズにスクロール
@@ -590,9 +643,32 @@
         // 「すべての地域のイベントを表示」ボタン処理
         document.getElementById("btnShowAll").onclick = () => {
             document.getElementById("searchPrefecture").value = "";
+            const monthInput = document.getElementById("searchMonth");
+            monthInput.value = "";
             document.getElementById("resultTitle").textContent = "開催予定のイベント（全地域）";
             renderEvents(allEvents);
         };
+
+        // --- 月別検索のドロップダウンを生成 ---
+        function populateMonthSelector() {
+            const select = document.getElementById("searchMonth");
+            select.innerHTML = '<option value="">月を選択...</option>'; // デフォルトオプション
+
+            const now = new Date();
+            // 今月から24ヶ月先までをリストアップ
+            for (let i = 0; i < 24; i++) {
+                const date = new Date(now.getFullYear(), now.getMonth() + i, 1);
+                const year = date.getFullYear();
+                const month = date.getMonth() + 1;
+                const value = `${year}-${String(month).padStart(2, '0')}`;
+                const text = `${year}年${month}月`;
+                
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = text;
+                select.appendChild(option);
+            }
+        }
 
         // --- ダウンロード共通処理 ---
         function downloadFile(content, fileName, mimeType, useBOM = false) {
@@ -790,6 +866,7 @@
         });
 
         // 起動時に読み込み
+        populateMonthSelector();
         loadEvents();
     </script>
 </body>

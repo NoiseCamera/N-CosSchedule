@@ -35,8 +35,8 @@
         <input type="text" id="title" placeholder="イベント名（必須）">
         <input type="text" id="posterName" placeholder="投稿者名">
         
-        <input type="text" id="prefecture" list="prefecture-list" placeholder="都道府県・地域（直接入力可）">
-        <datalist id="prefecture-list">
+        <select id="prefecture" onchange="document.getElementById('prefecture-other').style.display = this.value === 'その他' ? 'block' : 'none';">
+            <option value="">都道府県・地域を選択</option>
             <option value="北海道">北海道</option>
             <option value="青森県">青森県</option>
             <option value="岩手県">岩手県</option>
@@ -84,7 +84,10 @@
             <option value="宮崎県">宮崎県</option>
             <option value="鹿児島県">鹿児島県</option>
             <option value="沖縄県">沖縄県</option>
-        </datalist>
+            <option value="海外">海外</option>
+            <option value="その他">その他（直接入力）</option>
+        </select>
+        <input type="text" id="prefecture-other" placeholder="その他の地域を入力" style="display: none; margin-top: -10px;">
 
         <input type="text" id="address" placeholder="会場・住所">
         <input type="text" id="startDate" placeholder="開催日（必須）" onfocus="(this.type='date')" onblur="(this.value==''?this.type='text':this.type='date')">
@@ -95,6 +98,11 @@
         </div>
 
         <input type="url" id="url" placeholder="公式サイトURL (https://...)">
+        
+        <p style="font-size: 0.85em; color: #666; margin: 5px 0 5px 5px; line-height: 1.5;">
+            💡 <strong>詳細欄について（基本は自由記入です！）</strong><br>
+            どんなロケーションで撮影できるか、イベントの雰囲気や特色など、他のコスプレイヤーさんが参加をイメージしやすい内容を書いていただけると嬉しいです✨
+        </p>
         <textarea id="description" rows="4" placeholder="イベント詳細"></textarea>
         
         <div class="btn-group">
@@ -503,7 +511,32 @@
             // フォームに値をセット
             document.getElementById("title").value = data.title || "";
             document.getElementById("posterName").value = data.posterName || "";
-            document.getElementById("prefecture").value = data.prefecture || "";
+            
+            const prefSelect = document.getElementById("prefecture");
+            const prefOther = document.getElementById("prefecture-other");
+            if (data.prefecture) {
+                let prefExists = false;
+                for (let i = 0; i < prefSelect.options.length; i++) {
+                    if (prefSelect.options[i].value === data.prefecture && data.prefecture !== "") {
+                        prefExists = true;
+                        break;
+                    }
+                }
+                if (prefExists) {
+                    prefSelect.value = data.prefecture;
+                    prefOther.style.display = "none";
+                    prefOther.value = "";
+                } else {
+                    prefSelect.value = "その他";
+                    prefOther.style.display = "block";
+                    prefOther.value = data.prefecture;
+                }
+            } else {
+                prefSelect.value = "";
+                prefOther.style.display = "none";
+                prefOther.value = "";
+            }
+
             document.getElementById("address").value = data.address || "";
             
             if (data.startDate) {
@@ -532,6 +565,8 @@
             document.getElementById("title").value = "";
             document.getElementById("posterName").value = "";
             document.getElementById("prefecture").value = "";
+            document.getElementById("prefecture-other").value = "";
+            document.getElementById("prefecture-other").style.display = "none";
             document.getElementById("address").value = "";
             document.getElementById("url").value = "";
             document.getElementById("description").value = "";
@@ -603,7 +638,10 @@
             try {
                 const title = document.getElementById("title").value;
                 const posterName = document.getElementById("posterName").value || "";
-                const prefecture = document.getElementById("prefecture").value;
+                let prefecture = document.getElementById("prefecture").value;
+                if (prefecture === "その他") {
+                    prefecture = document.getElementById("prefecture-other").value.trim();
+                }
                 const address = document.getElementById("address").value;
                 const startDateStr = document.getElementById("startDate").value;
                 const startTime = document.getElementById("startTime").value;
