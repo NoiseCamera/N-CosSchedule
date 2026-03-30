@@ -156,8 +156,8 @@
     <div id="adminToolsCard" class="card" style="display: none; border-left: 5px solid #d32f2f;">
         <h2 style="color: #d32f2f;">🛠️ 管理者用ツール</h2>
         <p>このセクションは管理者のみに表示されています。</p>
-        <button id="btnCleanupOldEvents" class="secondary" style="background-color: #ffcdd2; color: #d32f2f; width: auto; padding: 10px 20px;">半年以上前のイベントを一括削除</button>
-        <p style="font-size: 0.8em; color: #666; margin-top: 10px;">開催日が半年以上前のイベントを検索し、ソフトデリート（非表示に）します。この操作は取り消せません。</p>
+        <button id="btnCleanupOldEvents" class="secondary" style="background-color: #ffcdd2; color: #d32f2f; width: auto; padding: 10px 20px;">半年以上前のイベントを完全削除</button>
+        <p style="font-size: 0.8em; color: #666; margin-top: 10px;">開催日が半年以上前のイベントを検索し、データベースから完全に削除します。この操作は取り消せません。</p>
     </div>
 
 
@@ -816,7 +816,7 @@
                 return;
             }
 
-            if (!await customConfirm("開催日から半年以上経過した古いイベントをすべて削除（非表示化）します。\nこの操作は元に戻せません。本当に実行しますか？")) {
+            if (!await customConfirm("開催日から半年以上経過した古いイベントをすべてデータベースから完全に削除します。\nこの操作は元に戻せません。本当に実行しますか？")) {
                 return;
             }
 
@@ -843,7 +843,7 @@
                 let currentBatchSize = 0;
 
                 querySnapshot.forEach((docSnapshot) => {
-                    currentBatch.update(doc(db, "events", docSnapshot.id), { deletedAt: Timestamp.now() });
+                    currentBatch.delete(doc(db, "events", docSnapshot.id));
                     deletedCount++;
                     currentBatchSize++;
                     if (currentBatchSize === batchSize) {
@@ -861,7 +861,7 @@
                     await batch.commit();
                 }
 
-                await customAlert(`クリーンアップが完了しました。\n${deletedCount}件の古いイベントを削除しました。`);
+                await customAlert(`クリーンアップが完了しました。\n${deletedCount}件の古いイベントを完全に削除しました。`);
             } catch (e) {
                 console.error("Cleanup error:", e);
                 await customAlert(`処理中にエラーが発生しました。\n${e.message}\n\n※この機能の初回実行時には、複合インデックスの作成を求めるエラーが出ることがあります。その場合は、開発者コンソールに表示されるURLからインデックスを作成してください。`);
