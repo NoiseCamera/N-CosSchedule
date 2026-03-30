@@ -714,7 +714,6 @@
                 option.textContent = text;
                 select.appendChild(option);
             }
-            select.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`; // 現在の月をデフォルトに設定
         }
 
         // --- ダウンロード共通処理 ---
@@ -938,6 +937,8 @@
 
         // 起動時に読み込み
         populateMonthSelector();
+        document.getElementById("searchPrefecture").value = "";
+        document.getElementById("resultTitle").textContent = "開催予定のイベント（全地域）";
         document.getElementById('btnCleanupOldEvents').onclick = cleanupOldEvents;
         loadEvents();
     </script>
