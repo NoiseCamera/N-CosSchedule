@@ -360,3 +360,32 @@ button.secondary:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 15px rgba(0,0,0,0.4);
 }
+
+/* --- 印刷（PDF保存）向けの設定 --- */
+@media print {
+    /* PDF出力時はアコーディオンを強制的に展開し、Gridによる高さ制限を解除（全内容を表示） */
+    .main-accordion-wrapper {
+        display: block !important;
+        height: auto !important;
+    }
+    .main-accordion-content {
+        overflow: visible !important;
+    }
+    
+    /* イベントアイテムやカードがページの境界で不自然に切れないようにする */
+    .card, .event-item {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    /* PDFに不要な操作用ボタン（ページトップ、各種ボタン類）を非表示 */
+    .page-top-btn, .admin-btn-container, .report-btn, button {
+        display: none !important;
+    }
+    
+    /* 背景色やグラデーションを可能な限りPDFにも反映させる（ブラウザ側の「背景のグラフィックス」設定も必要） */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}

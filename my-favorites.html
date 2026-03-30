@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=0.8, user-scalable=no">
+    <title>みんなで作るコスイベリスト！ - わたしの行きたいイベントリスト</title>
+    <link rel="icon" href="ico/favicon.ico">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>みんなで作るコスイベリスト！</h1>
+    
+    <div style="text-align: center; margin-bottom: 20px;">
+        <img src="assets/images/top.png" alt="トップ画像" style="max-width: 100%; height: auto; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+        <a href="index.html" class="nav-link" style="flex: 1; min-width: 130px; margin-bottom: 0;">→ イベント一覧へ</a>
+        <a href="search.html" class="nav-link" style="flex: 1; min-width: 130px; margin-bottom: 0;">イベントを投稿する</a>
+    </div>
+
+    <!-- お気に入りイベント一覧表示 -->
+    <div class="card">
+        <div style="margin-bottom: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">
+            <h2 id="resultTitle" style="margin: 0; border: none; padding: 0;">★ わたしの行きたいイベントリスト</h2>
+        </div>
+        <div id="event-list">読み込み中...</div>
+        <div class="admin-btn-container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <button id="btnDownloadCSV" class="secondary" style="width: auto; font-size: 0.85em; padding: 8px 16px; margin: 0;">📥 CSV</button>
+                <button id="btnDownloadJSON" class="secondary" style="width: auto; font-size: 0.85em; padding: 8px 16px; margin: 0;">📥 JSON</button>
+                <button id="btnDownloadTXT" class="secondary" style="width: auto; font-size: 0.85em; padding: 8px 16px; margin: 0;">📥 テキスト</button>
+            </div>
+        </div>
+    </div>
+
+    <footer style="text-align: center; font-size: 0.8em; color: #666; margin-top: 30px; padding: 15px; background: #fffaf0; border-radius: 8px; border: 1px solid #f3e5d4;">
+        <p style="margin: 0;">このサイトの情報はユーザーの投稿によって作られているため、正確ではない場合もあります。イベントに参加する際は、必ず公式サイト等で最新の情報をご確認ください。</p>
+        <p style="margin: 5px 0 0 0;">当サイトの利用により生じたいかなるトラブルや損害等についても、管理人は一切の責任を負いません。</p>
+        <p style="margin: 5px 0 0 0;">当サイトは予告なく変更、更新、終了、または閉鎖することがあります。あらかじめご了承ください。</p>
+        <p style="margin: 5px 0 0 0;">このサイト、画像は生成AIを使用して作成されています。</p>
+        <p style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px; font-size: 0.9em;">© N-CosSchedule Project by NoiseCamera</p>
+    </footer>
+
+    <!-- Custom Alert / Confirm などのモーダルは index.html と共通のため省略せず配置 -->
+    <div id="custom-alert-overlay" class="custom-modal-overlay" style="display: none;">
+        <div class="custom-modal-box">
+            <p id="custom-alert-message" class="custom-modal-message"></p>
+            <div class="custom-modal-buttons">
+                <button id="custom-alert-ok">OK</button>
+            </div>
+        </div>
+    </div>
+    <div id="custom-confirm-overlay" class="custom-modal-overlay" style="display: none;">
+        <div class="custom-modal-box">
+            <p id="custom-confirm-message" class="custom-modal-message"></p>
+            <div class="custom-modal-buttons">
+                <button id="custom-confirm-no" class="secondary">キャンセル</button>
+                <button id="custom-confirm-yes">はい</button>
+            </div>
+        </div>
+    </div>
+
+    <button id="btnPageTop" class="page-top-btn">↑</button>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBLvko7-HHZQVQCE_ChrCgG6FlSbL3LILU",
+            authDomain: "n-cosschedule.firebaseapp.com",
+            projectId: "n-cosschedule",
+            storageBucket: "n-cosschedule.firebasestorage.app",
+            messagingSenderId: "280035863247",
+            appId: "1:280035863247:web:2f1da14c13061f1bc8e5ba"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        function getFavorites() {
+            const stored = localStorage.getItem("ncos_favorites");
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        function toggleFavorite(id) {
+            let favs = getFavorites();
+            if (favs.includes(id)) {
+                favs = favs.filter(f => f !== id);
+            } else {
+                favs.push(id);
+            }
+            localStorage.setItem("ncos_favorites", JSON.stringify(favs));
+            return favs.includes(id);
+        }
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/[&<>"']/g, function(match) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[match];
+            });
+        }
+
+        function customAlert(message) {
+            return new Promise((resolve) => {
+                const overlay = document.getElementById('custom-alert-overlay');
+                const messageP = document.getElementById('custom-alert-message');
+                const okBtn = document.getElementById('custom-alert-ok');
+                messageP.textContent = message;
+                overlay.style.display = 'flex';
+                okBtn.onclick = () => { overlay.style.display = 'none'; okBtn.onclick = null; resolve(); };
+            });
+        }
+
+        function customConfirm(message) {
+            return new Promise((resolve) => {
+                const overlay = document.getElementById('custom-confirm-overlay');
+                const messageP = document.getElementById('custom-confirm-message');
+                const yesBtn = document.getElementById('custom-confirm-yes');
+                const noBtn = document.getElementById('custom-confirm-no');
+                messageP.textContent = message;
+                overlay.style.display = 'flex';
+                yesBtn.onclick = () => { overlay.style.display = 'none'; yesBtn.onclick = null; resolve(true); };
+                noBtn.onclick = () => { overlay.style.display = 'none'; noBtn.onclick = null; resolve(false); };
+            });
+        }
+
+        let currentRenderedEvents = [];
+
+        function loadEvents() {
+            const listDiv = document.getElementById("event-list");
+            try {
+                const q = query(collection(db, "events"), orderBy("startDate", "asc"));
+                onSnapshot(q, (querySnapshot) => {
+                    const allEvents = [];
+                    const favs = getFavorites();
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        if (!data.deletedAt && favs.includes(doc.id)) {
+                            allEvents.push({ ...data, id: doc.id });
+                        }
+                    });
+                    renderEvents(allEvents);
+                }, (error) => {
+                    listDiv.innerHTML = "データの取得に失敗しました。";
+                });
+            } catch (e) {
+                listDiv.innerHTML = "データの取得に失敗しました。";
+            }
+        }
+
+        function renderEvents(events) {
+            currentRenderedEvents = events;
+            const listDiv = document.getElementById("event-list");
+            listDiv.innerHTML = "";
+
+            if (events.length === 0) {
+                listDiv.innerHTML = "行きたいイベントがまだ登録されていません。<br>イベント一覧から「☆ 行きたい！に追加」ボタンを押して追加しましょう！";
+                return;
+            }
+
+            const favs = getFavorites();
+            const groupedEvents = new Map();
+            events.forEach((data) => {
+                const eventDate = data.startDate ? data.startDate.toDate() : null;
+                const dateKey = eventDate ? eventDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' }) : "未設定";
+                if (!groupedEvents.has(dateKey)) groupedEvents.set(dateKey, []);
+                groupedEvents.get(dateKey).push({ data, eventDate });
+            });
+
+            for (const [dateKey, group] of groupedEvents) {
+                const dateHeader = document.createElement("h3");
+                dateHeader.className = "date-header";
+                dateHeader.textContent = dateKey;
+                dateHeader.style.marginTop = "20px";
+                dateHeader.style.borderBottom = "2px solid #ff4081";
+                dateHeader.style.paddingBottom = "5px";
+                dateHeader.style.color = "#ff4081";
+                listDiv.appendChild(dateHeader);
+
+                group.forEach(({ data, eventDate }) => {
+                    const month = eventDate ? eventDate.toLocaleDateString('en-US', { month: 'short' }) : '---';
+                    const day = eventDate ? eventDate.getDate() : '--';
+                    const fullDateStr = eventDate ? eventDate.toLocaleDateString('ja-JP') : "未設定";
+                    const isFav = favs.includes(data.id);
+                    
+                    const item = document.createElement("div");
+                    item.className = "event-item";
+                    item.style.cssText = "background: #fffafb; border-left: 6px solid #ff4081; border-radius: 12px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(255, 64, 129, 0.1);";
+
+                    const url = data.url && (data.url.startsWith('http://') || data.url.startsWith('https://')) ? escapeHTML(data.url) : null;
+                    const urlButtonHTML = url ? `<button class="external-link-btn" data-url="${url}" style="font-size: 0.85em; display: inline-block; background: #e3f2fd; color: #1565c0; padding: 5px 12px; border-radius: 15px; text-decoration: none; font-weight: bold; border: none; cursor: pointer; margin-bottom: 0;">🔗 公式サイト</button>` : "";
+
+                    item.innerHTML = `
+                        <div class="event-date" style="background: linear-gradient(135deg, #ff4081, #ff79b0); color: white; border-radius: 8px; padding: 10px; text-align: center; min-width: 60px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <span class="month" style="font-size: 0.9em; font-weight: bold; display: block;">${month}</span>
+                            <span class="day" style="font-size: 1.4em; font-weight: bold; display: block;">${day}</span>
+                        </div>
+                        <div class="event-details" style="flex: 1; padding-left: 10px;">
+                            <div class="event-info" style="margin-bottom: 10px;">
+                                <strong style="font-size: 1.25em; color: #333;">✨ ${escapeHTML(data.title)}</strong><br>
+                                <span class="full-date" style="color: #666; font-size: 0.9em;">🕒 ${escapeHTML(fullDateStr)} ${escapeHTML(data.startTime) || ""} ～ ${escapeHTML(data.endTime) || ""}</span>
+                            </div>
+                            <div class="location-info" style="margin-bottom: 10px;">
+                                <span class="tag" style="background: #e1bee7; color: #4a148c; padding: 4px 10px; border-radius: 15px; font-size: 0.85em; font-weight: bold;">📍 ${escapeHTML(data.prefecture) || '場所未定'}</span> <span style="font-size: 0.95em; color: #444;">${escapeHTML(data.address) || ''}</span>
+                            </div>
+                            <p style="font-size: 0.95em; color: #555; margin: 10px 0; background: #fff; padding: 12px; border-radius: 8px; border: 1px dashed #ffb6c1;">💬 ${escapeHTML(data.description) || "詳細なし"}</p>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 5px;">
+                                ${urlButtonHTML}
+                                <button class="btn-favorite" data-id="${data.id}" style="font-size: 0.85em; display: inline-block; background: ${isFav ? '#FF4081' : 'white'}; color: ${isFav ? 'white' : '#FF4081'}; padding: 5px 12px; border-radius: 15px; font-weight: bold; border: 1px solid #FF4081; cursor: pointer; margin-bottom: 0;">${isFav ? '★ 行きたい！済' : '☆ 行きたい！に追加'}</button>
+                            </div>
+                        </div>
+                    `;
+                    listDiv.appendChild(item);
+                });
+            }
+
+            document.querySelectorAll(".btn-favorite").forEach(btn => {
+                btn.onclick = async () => {
+                    if (!(await customConfirm("行きたいリストから解除しますか？"))) return;
+                    toggleFavorite(btn.dataset.id);
+                    loadEvents(); // お気に入りを解除したらすぐ一覧から消えるように再読み込み
+                };
+            });
+            document.querySelectorAll(".external-link-btn").forEach(btn => {
+                btn.onclick = async () => {
+                    const url = btn.dataset.url;
+                    if (await customConfirm("外部サイトへ移動します。\n\n※リンク先の安全性については保証できません。自己責任でアクセスしてください。\n\n移動してもよろしいですか？")) {
+                        window.open(url, '_blank');
+                    }
+                };
+            });
+        }
+
+        // --- ダウンロード共通処理 ---
+        function downloadFile(content, fileName, mimeType, useBOM = false) {
+            let blobParts = [];
+            if (useBOM) {
+                blobParts.push(new Uint8Array([0xEF, 0xBB, 0xBF]));
+            }
+            blobParts.push(content);
+            
+            const blob = new Blob(blobParts, { type: mimeType });
+            const downloadUrl = URL.createObjectURL(blob);
+            
+            const a = document.createElement("a");
+            a.href = downloadUrl;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(downloadUrl);
+        }
+
+        // --- CSVダウンロード処理 ---
+        document.getElementById("btnDownloadCSV").onclick = () => {
+            if (currentRenderedEvents.length === 0) {
+                customAlert("ダウンロードするイベントがありません。");
+                return;
+            }
+            let csvContent = "イベント名,開催日,開始時間,終了時間,都道府県,住所,投稿者名,URL,詳細\n";
+            currentRenderedEvents.forEach(data => {
+                const escapeCsv = (str) => `"${(str || "").replace(/"/g, '""')}"`;
+                const title = escapeCsv(data.title);
+                const d = data.startDate ? data.startDate.toDate() : null;
+                const fullDateStr = d ? d.toLocaleDateString('ja-JP') : "";
+                const startTime = escapeCsv(data.startTime);
+                const endTime = escapeCsv(data.endTime);
+                const pref = escapeCsv(data.prefecture);
+                const address = escapeCsv(data.address);
+                const posterName = escapeCsv(data.posterName);
+                const url = escapeCsv(data.url);
+                const description = escapeCsv(data.description);
+                csvContent += `${title},${fullDateStr},${startTime},${endTime},${pref},${address},${posterName},${url},${description}\n`;
+            });
+            downloadFile(csvContent, "my_favorite_events.csv", "text/csv", true);
+        };
+
+        // --- JSONダウンロード処理 ---
+        document.getElementById("btnDownloadJSON").onclick = () => {
+            if (currentRenderedEvents.length === 0) {
+                customAlert("ダウンロードするイベントがありません。");
+                return;
+            }
+            const exportData = currentRenderedEvents.map(data => {
+                const eventDate = data.startDate ? data.startDate.toDate() : null;
+                const fullDateStr = eventDate ? eventDate.toLocaleDateString('ja-JP') : "";
+                return {
+                    title: data.title || "",
+                    date: fullDateStr,
+                    startTime: data.startTime || "",
+                    endTime: data.endTime || "",
+                    prefecture: data.prefecture || "",
+                    address: data.address || "",
+                    posterName: data.posterName || "",
+                    url: data.url || "",
+                    description: data.description || ""
+                };
+            });
+            downloadFile(JSON.stringify(exportData, null, 2), "my_favorite_events.json", "application/json", false);
+        };
+
+        // --- テキスト（見やすい形式）ダウンロード処理 ---
+        document.getElementById("btnDownloadTXT").onclick = () => {
+            if (currentRenderedEvents.length === 0) {
+                customAlert("ダウンロードするイベントがありません。");
+                return;
+            }
+            let txtContent = "【みんなで作るコスイベリスト！】\nわたしの行きたいイベントリスト\n=========================================\n\n";
+            currentRenderedEvents.forEach(data => {
+                const eventDate = data.startDate ? data.startDate.toDate() : null;
+                const fullDateStr = eventDate ? eventDate.toLocaleDateString('ja-JP') : "未設定";
+                const timeStr = `${data.startTime || ""} ～ ${data.endTime || ""}`.trim();
+                const location = `${data.prefecture || "場所未定"} ${data.address || ""}`.trim();
+                
+                txtContent += `■ ${data.title || "名称未設定"}\n`;
+                txtContent += `  開催日: ${fullDateStr}\n`;
+                if (timeStr !== "～") txtContent += `  時間  : ${timeStr}\n`;
+                if (location) txtContent += `  場所  : ${location}\n`;
+                if (data.url) txtContent += `  URL   : ${data.url}\n`;
+                if (data.posterName) txtContent += `  投稿者: ${data.posterName}\n`;
+                if (data.description) txtContent += `  詳細  :\n    ${data.description.replace(/\n/g, "\n    ")}\n`;
+                txtContent += `\n-----------------------------------------\n\n`;
+            });
+            downloadFile(txtContent, "my_favorite_events.txt", "text/plain", true);
+        };
+
+        const btnPageTop = document.getElementById("btnPageTop");
+        window.addEventListener("scroll", () => btnPageTop.classList.toggle("show", window.scrollY > 300));
+        btnPageTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+        loadEvents();
+    </script>
+</body>
+</html>
