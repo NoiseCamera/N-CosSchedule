@@ -810,13 +810,19 @@
                     finalAddress = prefecture;
                 }
 
+                // 開催日から半年後（6ヶ月後）の日時を計算 (TTL用)
+                const startD = new Date(startDateStr);
+                const expireDate = new Date(startD);
+                expireDate.setMonth(expireDate.getMonth() + 6);
+
                 const eventData = {
                     title, posterName, prefecture,
                     address: finalAddress, // アプリのフォーマットに合わせた住所
-                    startDate: Timestamp.fromDate(new Date(startDateStr)),
+                    startDate: Timestamp.fromDate(startD),
                     startTime, endTime, url, description,
                     stability: 0, // アプリ版との互換性のためのフィールド
-                    deletedAt: null // 追記: nullを明示的に保存しないと一覧クエリにヒットしません
+                    deletedAt: null, // 追記: nullを明示的に保存しないと一覧クエリにヒットしません
+                    expireAt: Timestamp.fromDate(expireDate) // TTLポリシーで自動削除される日時
                 };
 
                 // ボタンのテキストを「投稿中...」に変更

@@ -152,6 +152,15 @@
         </div>
     </div>
 
+    <!-- 管理者用ツール -->
+    <div id="adminToolsCard" class="card" style="display: none; border-left: 5px solid #d32f2f;">
+        <h2 style="color: #d32f2f;">🛠️ 管理者用ツール</h2>
+        <p>このセクションは管理者のみに表示されています。</p>
+        <button id="btnCleanupOldEvents" class="secondary" style="background-color: #ffcdd2; color: #d32f2f; width: auto; padding: 10px 20px;">半年以上前のイベントを一括削除</button>
+        <p style="font-size: 0.8em; color: #666; margin-top: 10px;">開催日が半年以上前のイベントを検索し、ソフトデリート（非表示に）します。この操作は取り消せません。</p>
+    </div>
+
+
     <footer style="text-align: center; font-size: 0.8em; color: #666; margin-top: 30px; padding: 15px; background: #fffaf0; border-radius: 8px; border: 1px solid #f3e5d4;">
         <p style="margin: 0;">このサイトの情報はユーザーの投稿によって作られているため、正確ではない場合もあります。イベントに参加する際は、必ず公式サイト等で最新の情報をご確認ください。</p>
         <p style="margin: 5px 0 0 0;">公式サイトのリンク先に悪質なサイトが含まれる場合もありますので、リンクを開く際は自己責任でお願いいたします。</p>
@@ -200,7 +209,7 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, orderBy, doc, deleteDoc, addDoc, Timestamp, onSnapshot, where, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, orderBy, doc, deleteDoc, addDoc, Timestamp, onSnapshot, where, updateDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -801,6 +810,65 @@
             downloadFile(txtContent, "cosplay_event_list.txt", "text/plain", true);
         };
 
+        // --- 古いイベントの一括削除（管理者用） ---
+        async function cleanupOldEvents() {
+            if (!isAdmin) {
+                await customAlert("この操作は管理者のみ実行できます。");
+                return;
+            }
+
+            if (!await customConfirm("開催日から半年以上経過した古いイベントをすべて削除（非表示化）します。\nこの操作は元に戻せません。本当に実行しますか？")) {
+                return;
+            }
+
+            await customAlert("処理を開始します。イベント数によっては時間がかかる場合があります。完了したら再度メッセージが表示されます。");
+
+            const sixMonthsAgo = new Date();
+            sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+            const sixMonthsAgoTimestamp = Timestamp.fromDate(sixMonthsAgo);
+
+            let deletedCount = 0;
+            const batchSize = 100; // 一度に処理するドキュメント数
+
+            try {
+                const q = query(collection(db, "events"), where("startDate", "<", sixMonthsAgoTimestamp), where("deletedAt", "==", null));
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    await customAlert("削除対象の古いイベントは見つかりませんでした。");
+                    return;
+                }
+
+                const batches = [];
+                let currentBatch = writeBatch(db);
+                let currentBatchSize = 0;
+
+                querySnapshot.forEach((docSnapshot) => {
+                    currentBatch.update(doc(db, "events", docSnapshot.id), { deletedAt: Timestamp.now() });
+                    deletedCount++;
+                    currentBatchSize++;
+                    if (currentBatchSize === batchSize) {
+                        batches.push(currentBatch);
+                        currentBatch = writeBatch(db);
+                        currentBatchSize = 0;
+                    }
+                });
+
+                if (currentBatchSize > 0) {
+                    batches.push(currentBatch);
+                }
+
+                for (const batch of batches) {
+                    await batch.commit();
+                }
+
+                await customAlert(`クリーンアップが完了しました。\n${deletedCount}件の古いイベントを削除しました。`);
+            } catch (e) {
+                console.error("Cleanup error:", e);
+                await customAlert(`処理中にエラーが発生しました。\n${e.message}\n\n※この機能の初回実行時には、複合インデックスの作成を求めるエラーが出ることがあります。その場合は、開発者コンソールに表示されるURLからインデックスを作成してください。`);
+            }
+        }
+
         // 削除処理
         async function deleteEvent(id) {
             const myIds = getMyPostIds();
@@ -846,8 +914,10 @@
 
         // 認証状態の監視
         onAuthStateChanged(auth, (user) => {
+            const adminToolsCard = document.getElementById('adminToolsCard');
             isAdmin = user !== null; // ログインできているユーザーは管理者とする
             document.getElementById("btnAdmin").textContent = isAdmin ? "管理者モード終了" : "管理者モード";
+            adminToolsCard.style.display = isAdmin ? 'block' : 'none'; // 管理者ツールカードの表示/非表示
             authInitialized = true; // 認証チェック完了
             // 認証状態が変わったので、表示を再描画
             renderEvents(currentRenderedEvents.length > 0 ? currentRenderedEvents : allEvents);
@@ -868,6 +938,7 @@
 
         // 起動時に読み込み
         populateMonthSelector();
+        document.getElementById('btnCleanupOldEvents').onclick = cleanupOldEvents;
         loadEvents();
     </script>
 </body>
